@@ -6,6 +6,7 @@
         <h1
             class="text-3xl md:text-5xl font-extrabold text-center uppercase mb-12 bg-gradient-to-r from-indigo-400 via-purple-500 to-indigo-600 bg-clip-text text-transparent transform -rotate-2">
             Make A Payment</h1>
+        {{ env('PAYPAL_SANDBOX_CLIENT_ID') }}
         @if (session()->has('success'))
         <div class="alert alert-success">
             {{ session()->get('success') }}
