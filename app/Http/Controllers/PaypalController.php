@@ -53,6 +53,8 @@ class PaypalController extends Controller
             "application_context" => [
                 "return_url" => route('success.payment'),
                 "cancel_url" => route('cancel.payment'),
+                'user_action' => 'PAY_NOW',
+                'shipping_preferene' => 'NO_SHIPPING'
             ],
             "purchase_units" => [
                 0 => [
@@ -63,6 +65,8 @@ class PaypalController extends Controller
                 ]
             ]
         ]);
+        // ADD product
+
         if (isset($response['id']) && $response['id'] != null) {
             foreach ($response['links'] as $links) {
                 if ($links['rel'] == 'approve') {
