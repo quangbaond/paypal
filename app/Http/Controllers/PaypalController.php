@@ -43,6 +43,43 @@ class PaypalController extends Controller
         }
     }
 
+    public function handlePayment5(Request $request)
+    {
+        $provider = new PayPalClient;
+        $provider->setApiCredentials(config('paypal'));
+        $paypalToken = $provider->getAccessToken();
+        $response = $provider->createOrder([
+            "intent" => "CAPTURE",
+            "application_context" => [
+                "return_url" => route('success.payment'),
+                "cancel_url" => route('cancel.payment'),
+            ],
+            "purchase_units" => [
+                0 => [
+                    "amount" => [
+                        "currency_code" => "USD",
+                        "value" => "5.00"
+                    ]
+                ]
+            ]
+        ]);
+        if (isset($response['id']) && $response['id'] != null) {
+            foreach ($response['links'] as $links) {
+                if ($links['rel'] == 'approve') {
+                    return redirect()->away($links['href']);
+                }
+            }
+            return redirect()
+                ->route('cancel.payment')
+                ->with('error', 'Có lỗi xảy ra...');
+        } else {
+            return redirect()
+                ->route('create.payment')
+                ->with('error', $response['message'] ?? 'Có lỗi xảy ra...');
+        }
+    }
+
+
     public function handlePayment500(Request $request)
     {
         $provider = new PayPalClient;
